@@ -3,12 +3,15 @@ import requests
 from bs4 import BeautifulSoup
 from espncricinfo.exceptions import MatchNotFoundError, NoScorecardError
 
+
 class Match(object):
 
     def __init__(self, match_id):
         self.match_id = match_id
-        self.match_url = "https://www.espncricinfo.com/matches/engine/match/{0}.html".format(str(match_id))
-        self.json_url = "https://www.espncricinfo.com/matches/engine/match/{0}.json".format(str(match_id))
+        self.match_url = "https://www.espncricinfo.com/matches/engine/match/{0}.html".format(
+            str(match_id))
+        self.json_url = "https://www.espncricinfo.com/matches/engine/match/{0}.json".format(
+            str(match_id))
         self.json = self.get_json()
         self.html = self.get_html()
         self.comms_json = self.get_comms_json()
@@ -22,7 +25,8 @@ class Match(object):
             self.series = self._series()
             self.series_name = self._series_name()
             self.series_id = self._series_id()
-            self.event_url = "https://core.espnuk.org/v2/sports/cricket/leagues/{0}/events/{1}".format(str(self.series_id), str(match_id))
+            self.event_url = "https://core.espnuk.org/v2/sports/cricket/leagues/{0}/events/{1}".format(
+                str(self.series_id), str(match_id))
             self.details_url = self._details_url()
             self.officials = self._officials()
             self.current_summary = self._current_summary()
@@ -81,7 +85,6 @@ class Match(object):
             self.all_innings = self._all_innings()
             self.close_of_play = self._close_of_play()
 
-
     def __str__(self):
         return self.description
 
@@ -123,11 +126,11 @@ class Match(object):
     def _details_url(self, page=1, number=1000):
         return self.event_url+"/competitions/{0}/details?page_size={1}&page={2}".format(str(self.match_id), str(number), str(page))
 
-    def __str__(self):
-        return self.json['description']
+    # def __str__(self):
+    #     return self.json['description']
 
-    def __unicode__(self):
-        return self.json['description']
+    # def __unicode__(self):
+    #     return self.json['description']
 
     def _status(self):
         return self.match_json()['match_status']
@@ -442,4 +445,4 @@ class Match(object):
             url = "https://www.espncricinfo.com/ci/engine/match/index.html?view=week"
         r = requests.get(url)
         soup = BeautifulSoup(r.text, 'html.parser')
-        return [x['href'].split('/',4)[4].split('.')[0] for x in soup.findAll('a', href=True, text='Scorecard')]
+        return [x['href'].split('/', 4)[4].split('.')[0] for x in soup.findAll('a', href=True, text='Scorecard')]

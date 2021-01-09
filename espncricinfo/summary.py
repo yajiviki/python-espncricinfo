@@ -4,10 +4,11 @@ import datetime
 from bs4 import BeautifulSoup
 from espncricinfo.match import Match
 
+
 class Summary(object):
 
     def __init__(self):
-        self.url = "https://www.espncricinfo.com/scores"
+        self.url = "https://www.espncricinfo.com/live-cricket-score"
         self.html = self.get_html()
         self.match_ids = self._match_ids()
         self.matches = self._build_matches()
@@ -15,7 +16,7 @@ class Summary(object):
     def get_html(self):
         r = requests.get(self.url)
         if r.status_code == 404:
-            raise MatchNotFoundError
+            return BeautifulSoup(r.text, 'html.parser')  # MatchNotFoundError
         else:
             return BeautifulSoup(r.text, 'html.parser')
 
@@ -27,7 +28,8 @@ class Summary(object):
             return None
 
     def _match_ids(self):
-        matches = [x['id'] for x in self.summary_json()['props']['pageProps']['data']['content']['leagueEvents'][0]['matchEvents']]
+        matches = [x['id'] for x in self.summary_json(
+        )['props']['pageProps']['data']['content']['leagueEvents'][0]['matchEvents']]
         return matches
 
     def _build_matches(self):
